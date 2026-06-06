@@ -4,6 +4,5 @@ __pycache__/
 *.pyo
 *.wav
 *.mp3
-bark_voices/
 data/
 models/
