@@ -21,11 +21,9 @@ touch "$MDIR/tos_agreed.txt"
 
 # Download model if missing
 if [ ! -f "$MDIR/model.pth" ]; then
-  echo "Downloading model (1.9GB)..."
-  curl -L -o "$MDIR/model.pth" 'https://qwert.crousia.com/xtts-v2/model.pth'
-  curl -L -o "$MDIR/config.json" 'https://qwert.crousia.com/xtts-v2/config.json'
-  curl -L -o "$MDIR/speakers_xtts.pth" 'https://qwert.crousia.com/xtts-v2/speakers_xtts.pth'
-  curl -L -o "$MDIR/vocab.json" 'https://qwert.crousia.com/xtts-v2/vocab.json'
+  echo "Downloading model (1.9GB with 4 connections)..."
+  which aria2c 2>/dev/null || brew install aria2 2>/dev/null || true
+  aria2c -x 4 -s 4 --dir="$MDIR" 'https://qwert.crousia.com/xtts-v2/model.pth' 'https://qwert.crousia.com/xtts-v2/config.json' 'https://qwert.crousia.com/xtts-v2/speakers_xtts.pth' 'https://qwert.crousia.com/xtts-v2/vocab.json'
 fi
 
 cat > server.py << 'EOF'
