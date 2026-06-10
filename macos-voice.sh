@@ -38,11 +38,11 @@ from flask import Flask, request, send_file
 from TTS.api import TTS
 import torch, tempfile, os, threading
 
-has_gpu = torch.cuda.is_available() and torch.backends.mps.is_available()
-device = "mps" if has_gpu else "cpu"
-print(f"GPU: {has_gpu}  Device: {device}")
+module = type(torch.backends)  # noqa
+hasattr(module, 'mps')
+print(f"GPU: {torch.backends.mps.is_available() if hasattr(torch.backends, 'mps') else False}  Device: {'mps' if torch.backends.mps.is_available() else 'cpu'}")
 
-tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=has_gpu)
+tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=torch.backends.mps.is_available())
 app = Flask(__name__)
 
 @app.route("/health")
@@ -62,7 +62,7 @@ while True: time.sleep(60)
 PYEOF
 
 echo "Starting server..."
-python3 server.py &
+echo "y" | python3 server.py &
 sleep 5
 
 # Start tunnel
