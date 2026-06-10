@@ -30,7 +30,7 @@ cat > server.py << 'EOF'
 from flask import Flask, request, send_file
 from TTS.api import TTS
 import torch, tempfile, os, threading
-os.environ['TTS_HOME'] = os.path.expanduser('~/Library/Application Support/tts')
+os.environ['TTS_HOME'] = os.path.expanduser('~/Library/Application Support')
 
 has_gpu = torch.backends.mps.is_available()
 print(f"GPU: {has_gpu}")
