@@ -28,13 +28,23 @@ fi
 
 cat > server.py << 'EOF'
 from flask import Flask, request, send_file
-from TTS.api import TTS
-import torch, tempfile, os, threading
-os.environ['TTS_HOME'] = os.path.expanduser('~/Library/Application Support')
+import torch, tempfile, os, threading, json
+
+# Load XTTS directly, bypassing TTS's broken download manager
+from TTS.tts.configs.xtts_config import XttsConfig
+from TTS.tts.models.xtts import Xtts
+
+model_dir = os.path.expanduser('~/Library/Application Support/tts/tts_models--multilingual--multi-dataset--xtts_v2')
+config = XttsConfig()
+config.load_json(os.path.join(model_dir, 'config.json'))
+tts = Xtts.init_from_config(config)
 
 has_gpu = torch.backends.mps.is_available()
-print(f"GPU: {has_gpu}")
-tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=has_gpu)
+device = 'mps' if has_gpu else 'cpu'
+tts.load_checkpoint(config, checkpoint_dir=model_dir, eval=True)
+tts.to(torch.device(device))
+
+print(f"GPU: {has_gpu}  Device: {device}")
 
 app = Flask(__name__)
 @app.route("/health")
