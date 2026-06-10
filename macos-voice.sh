@@ -10,7 +10,7 @@ cd ~/Desktop && mkdir -p dashe-voice && cd dashe-voice
 python3.10 -m venv venv 2>/dev/null || true
 source venv/bin/activate 2>/dev/null || true
 pip install -q TTS flask flask-cors 2>&1 | tail -1
-pip install -q "transformers<4.46" "torch<2.6" "torchaudio==2.3.1" werkzeug --force-reinstall 2>&1 | tail -1
+pip install -q "transformers<4.46" "torch<2.6" "torchaudio==2.3.1" "numpy<2" werkzeug --force-reinstall 2>&1 | tail -1
 curl -sL -o speaker.wav "https://qwert.crousia.com/speaker.wav"
 echo "Speaker: $(wc -c < speaker.wav) bytes"
 npm install -g localtunnel 2>/dev/null || sudo npm install -g localtunnel 2>/dev/null || true
